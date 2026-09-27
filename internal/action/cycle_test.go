@@ -148,3 +148,21 @@ func TestTarget_LeftAndRightHalves(t *testing.T) {
 		t.Errorf("RightHalf@2/3: got %+v want %+v", right, wantR)
 	}
 }
+
+func TestTarget_TopAndBottomFractions(t *testing.T) {
+	work := Rect{Left: -1080, Top: -100, Right: 0, Bottom: 1820}
+
+	top := Target(work, TopHalf, 0.5)
+	wantTop := Rect{Left: -1080, Top: -100, Right: 0, Bottom: 860}
+	if top != wantTop {
+		t.Errorf("TopHalf@0.5: got %+v want %+v", top, wantTop)
+	}
+
+	frac := 2.0 / 3.0
+	bottom := Target(work, BottomHalf, frac)
+	h := int32(float64(work.Height()) * frac)
+	wantBottom := Rect{Left: -1080, Top: work.Bottom - h, Right: 0, Bottom: 1820}
+	if bottom != wantBottom {
+		t.Errorf("BottomHalf@2/3: got %+v want %+v", bottom, wantBottom)
+	}
+}

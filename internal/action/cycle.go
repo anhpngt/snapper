@@ -2,8 +2,8 @@ package action
 
 import "time"
 
-// Cycler is the state machine that decides which width fraction to apply on
-// each hotkey press. It cycles through a fixed sequence when the same action
+// Cycler is the state machine that decides which size fraction to apply on each
+// hotkey press. It cycles through a fixed sequence when the same action
 // is pressed repeatedly on the same window, and resets on any of:
 //   - different target window
 //   - different action
@@ -30,7 +30,7 @@ func NewCycler(seq []float64, resetTimeout time.Duration, resizeTolerance int32)
 	}
 }
 
-// Next returns the width fraction to apply for this press and advances the
+// Next returns the size fraction to apply for this press and advances the
 // cycle. The caller must call Applied after placing the window, passing the
 // rect that was actually set, so the next press can detect user drift.
 func (c *Cycler) Next(hwnd uintptr, a Action, currentRect Rect, now time.Time) float64 {

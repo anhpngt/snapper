@@ -26,8 +26,7 @@ var (
 const (
 	dwmwaExtendedFrameBounds = 9
 
-	SW_MAXIMIZE = 3
-	SW_RESTORE  = 9
+	SW_RESTORE = 9
 
 	SWP_NOZORDER   = 0x0004
 	SWP_NOACTIVATE = 0x0010

@@ -18,7 +18,8 @@ const (
 	hotkeyRight     = 2
 	hotkeyMoveLeft  = 3
 	hotkeyMoveRight = 4
-	hotkeyMaximize  = 5
+	hotkeyTop       = 5
+	hotkeyBottom    = 6
 )
 
 var cycleSequence = []float64{0.5, 2.0 / 3.0, 1.0 / 3.0}
@@ -78,7 +79,7 @@ func runInstall() {
 	}
 	win.MessageBox("Snapper",
 		"Installed to "+install.Dir()+
-			".\n\nCtrl+Alt+Left/Right to snap. Ctrl+Shift+Alt+Left/Right to move across monitors."+
+			".\n\nCtrl+Alt+Arrow keys to snap. Ctrl+Shift+Alt+Left/Right to move across monitors."+
 			"\n\nSnapper will start automatically at login. Uninstall via Settings > Apps.",
 		win.MB_OK|win.MB_ICONINFORMATION)
 }
@@ -134,14 +135,16 @@ func runDaemon() {
 	hotkeys := []win.HotKey{
 		{ID: hotkeyLeft, Mods: win.MOD_CONTROL | win.MOD_ALT | win.MOD_NOREPEAT, VK: win.VK_LEFT},
 		{ID: hotkeyRight, Mods: win.MOD_CONTROL | win.MOD_ALT | win.MOD_NOREPEAT, VK: win.VK_RIGHT},
-		{ID: hotkeyMaximize, Mods: win.MOD_CONTROL | win.MOD_ALT | win.MOD_NOREPEAT, VK: win.VK_UP},
+		{ID: hotkeyTop, Mods: win.MOD_CONTROL | win.MOD_ALT | win.MOD_NOREPEAT, VK: win.VK_UP},
+		{ID: hotkeyBottom, Mods: win.MOD_CONTROL | win.MOD_ALT | win.MOD_NOREPEAT, VK: win.VK_DOWN},
 		{ID: hotkeyMoveLeft, Mods: win.MOD_CONTROL | win.MOD_ALT | win.MOD_SHIFT | win.MOD_NOREPEAT, VK: win.VK_LEFT},
 		{ID: hotkeyMoveRight, Mods: win.MOD_CONTROL | win.MOD_ALT | win.MOD_SHIFT | win.MOD_NOREPEAT, VK: win.VK_RIGHT},
 	}
 	bindings := map[int]binding{
 		hotkeyLeft:      {action: action.LeftHalf, name: "LeftHalf"},
 		hotkeyRight:     {action: action.RightHalf, name: "RightHalf"},
-		hotkeyMaximize:  {action: action.Maximize, name: "Maximize"},
+		hotkeyTop:       {action: action.TopHalf, name: "TopHalf"},
+		hotkeyBottom:    {action: action.BottomHalf, name: "BottomHalf"},
 		hotkeyMoveLeft:  {action: action.LeftHalf, crossMonitor: true, name: "LeftHalfOtherMonitor"},
 		hotkeyMoveRight: {action: action.RightHalf, crossMonitor: true, name: "RightHalfOtherMonitor"},
 	}
@@ -200,11 +203,6 @@ func rotateLogIfLarge(path string, maxBytes int64) {
 func snap(c *action.Cycler, a action.Action, crossMonitor bool) error {
 	hwnd := win.GetForegroundWindow()
 	if hwnd == 0 {
-		return nil
-	}
-
-	if a == action.Maximize {
-		win.ShowWindow(hwnd, win.SW_MAXIMIZE)
 		return nil
 	}
 
